@@ -1,7 +1,7 @@
 package br.com.itads.empirico.application.service;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -41,7 +41,7 @@ class TradeServiceTest {
 		Asset bitcoin = MockBuilderForTestsJunit.buildAssetBTC();
 		Trade trade = MockBuilderForTestsJunit.buildBuyTrade(bitcoin);
 		UUID uuid = UUID.randomUUID();		
-		when(positionRepository.getBy(any())).thenReturn(MockBuilderForTestsJunit.buildPosition());		
+		when(positionRepository.getBy(any())).thenReturn(MockBuilderForTestsJunit.buildPosition(trade));		
 		Position position = tradeService.processTrade(trade, uuid);		
 		assertNotNull(position);		
 	}
@@ -56,8 +56,9 @@ class TradeServiceTest {
 		Trade trade = MockBuilderForTestsJunit.buildBuyTrade(bitcoin);
 		UUID uuid = UUID.randomUUID();		
 		when(positionRepository.getBy(any())).thenReturn(null);		
-		Position position = tradeService.processTrade(trade, uuid);		
-		assertNull(position);		
+		Position position = tradeService.processTrade(trade, uuid);
+		position.consolidate();
+		assertTrue(position.getPositionTotalPrice() > 0);		
 	}	
 
 	/**
@@ -68,9 +69,15 @@ class TradeServiceTest {
 	 */
 	void RF01_13_processResult_with_position_ok() {
 		Result result = MockBuilderForTestsJunit.buildProfitResult();
-		UUID uuid = UUID.randomUUID();		
-		when(positionRepository.getBy(any())).thenReturn(MockBuilderForTestsJunit.buildPosition());		
-		Position position = tradeService.processResult(result, uuid);		
+		UUID positionUuid = UUID.randomUUID();
+		Asset bitcoin = MockBuilderForTestsJunit.buildAssetBTC();
+		Trade buyBtc = MockBuilderForTestsJunit.buildBuyTrade(bitcoin);
+		
+		Position position = MockBuilderForTestsJunit.buildPosition(buyBtc);
+
+		when(positionRepository.getBy(any())).thenReturn(position);
+
+		position = tradeService.processResult(result, positionUuid);		
 		assertNotNull(position);
 	}
 

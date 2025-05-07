@@ -45,12 +45,10 @@ public class WalletServiceTest {
 	void RF03_consolidateWallet() {		
 		Wallet wallet = MockBuilderForTestsJunit.buildFullWallet();
 
-		Position positionToTest = MockBuilderForTestsJunit.buildPosition(); 
-
 		Asset bitcoin = MockBuilderForTestsJunit.buildAssetBTC();
 		Trade buyBTC = MockBuilderForTestsJunit.buildBuyTrade(bitcoin);
 
-		positionToTest.incAsset(UUID.randomUUID(), buyBTC);
+		Position positionToTest = MockBuilderForTestsJunit.buildPosition(buyBTC);
 		wallet.updatePosition(positionToTest);
 		wallet.consolidate();
 

@@ -13,21 +13,25 @@ class WalletTest {
 
 	@Test
 	void consolidateWalletTest() {
+		
+		UUID uuid1 = UUID.randomUUID();
+		UUID uuid2 = UUID.randomUUID();
+		UUID uuid3 = UUID.randomUUID();
+
 		Wallet wallet = new Wallet();
-		Position position = new Position();
-		
+
 		Asset bitcoin = new Asset("BTC", "Bitcoin", AssetClassEnum.CRIPTO);
-		
-		Trade buyBTC = new Trade("COMPRA", LocalDateTime.now(),  1d,  100d, bitcoin);
-		position.incAsset(UUID.randomUUID(), buyBTC);
+
+		Trade buyBTC = new Trade(uuid1, "COMPRA", LocalDateTime.now(),  1d,  100d, bitcoin);
+		Position position = new Position(buyBTC);
 		wallet.updatePosition(position);		
 		
-		Trade buyBTC2 = new Trade("COMPRA", LocalDateTime.now(), 1d, 100d, bitcoin);
-		position.incAsset(UUID.randomUUID(), buyBTC2);
+		Trade buyBTC2 = new Trade(uuid2, "COMPRA", LocalDateTime.now(), 1d, 100d, bitcoin);
+		position.incAsset(buyBTC2);
 		wallet.updatePosition(position);
 		
-		Trade buyBTC3 = new Trade("COMPRA", LocalDateTime.now(), 1d,  90d, bitcoin);
-		position.incAsset(UUID.randomUUID(), buyBTC3);
+		Trade buyBTC3 = new Trade(uuid3, "COMPRA", LocalDateTime.now(), 1d,  90d, bitcoin);
+		position.incAsset(buyBTC3);
 		wallet.updatePosition(position);
 		
 		wallet.consolidate();

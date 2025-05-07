@@ -29,8 +29,10 @@ public class TradeService {
 	 */
 	public Position processTrade(Trade trade, UUID uuid) {
 		Position position = positionRepository.getBy(uuid);
-		if (Objects.nonNull(position)) {
-			position.incAsset(uuid, trade);
+		if (Objects.isNull(position)) {
+			position = new Position(trade);
+		} else {
+			position.incAsset(trade);
 		}
 		return position;
 	}
@@ -41,8 +43,8 @@ public class TradeService {
 	 * @param result
 	 * @param uuid
 	 */
-	public Position processResult(Result result, UUID uuid) {
-		Position position = positionRepository.getBy(uuid);
+	public Position processResult(Result result, UUID positionUuid) {
+		Position position = positionRepository.getBy(positionUuid);
 		if (Objects.nonNull(position)) {
 			position.addResult(null, result);
 		}

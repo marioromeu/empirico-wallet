@@ -13,20 +13,21 @@ class PositionTest {
 
 	@Test
 	void consolidateTest() {
-		Position position = new Position();
-		
+	
 		Asset bitcoin = new Asset("BTC", "Bitcoin", AssetClassEnum.CRIPTO);
 		
 		Double tradeValue = 100d;
 		
-		Trade buyBTC = new Trade("COMPRA", LocalDateTime.now(),  1d,  100d, bitcoin);
-		position.incAsset(UUID.randomUUID(), buyBTC);
+		UUID uuid1 = UUID.randomUUID();
+		UUID uuid2 = UUID.randomUUID();
+		
+		Trade buyBTC = new Trade(uuid1, "COMPRA", LocalDateTime.now(),  1d,  100d, bitcoin);
+		Position position = new Position(buyBTC);
 
 		tradeValue += 150;
 		
-		Trade buyBTC2 = new Trade("COMPRA", LocalDateTime.now(),  1d,  150d, bitcoin);
-		position.incAsset(UUID.randomUUID(), buyBTC2);
-		
+		Trade buyBTC2 = new Trade(uuid2, "COMPRA", LocalDateTime.now(),  1d,  150d, bitcoin);
+		position.incAsset(buyBTC2);
 		
 		position.consolidate();
 

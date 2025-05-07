@@ -14,15 +14,15 @@ import br.com.itads.empirico.application.domain.enums.ResultTypeEnum;
 public class MockBuilderForTestsJunit {
 
 	public static Trade buildBuyTrade(Asset asset) {		
-		return new Trade("Compra de Ativo", LocalDateTime.now(), 1d, 10d, asset);		
+		return new Trade(UUID.randomUUID(), "Compra de Ativo", LocalDateTime.now(), 1d, 10d, asset);		
 	}
 
 	public static Asset buildAssetBTC() {
 		return new Asset("BTC", "Bitcoin", AssetClassEnum.CRIPTO);
 	}
 
-	public static Position buildPosition() {
-		return new Position();		
+	public static Position buildPosition(Trade trade) {
+		return new Position(trade);
 	}
 
 	public static Result buildProfitResult() {
@@ -30,21 +30,20 @@ public class MockBuilderForTestsJunit {
 	}
 
 	public static Wallet buildFullWallet() {
-		Wallet wallet = buildWallet();		
-		Position position = buildPosition();		
+		Wallet wallet = buildWallet();
 		Asset bitcoin = buildAssetBTC();
 
 		Trade buyBTC1 = buildBuyTrade(bitcoin);
 		Trade buyBTC2 = buildBuyTrade(bitcoin);
 		Trade buyBTC3 = buildBuyTrade(bitcoin);
 		
-		position.incAsset(UUID.randomUUID(), buyBTC1);
+		Position position = buildPosition(buyBTC1);
 		wallet.updatePosition(position);
 		
-		position.incAsset(UUID.randomUUID(), buyBTC2);
+		position.incAsset(buyBTC2);
 		wallet.updatePosition(position);
 		
-		position.incAsset(UUID.randomUUID(), buyBTC3);
+		position.incAsset(buyBTC3);
 		wallet.updatePosition(position);
 
 		return wallet;

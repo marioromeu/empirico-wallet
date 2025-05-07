@@ -35,6 +35,10 @@ public class Position {
 	 */
 	private List<Result> results = new ArrayList<>();
 
+	public Position(Trade trade) {
+		incAsset(trade);
+	}
+	
 	public void consolidate() {		
 		this.trades.entrySet().stream().forEach(trade -> {
 			totalPrice += trade.getValue().getTotalTradeValue();
@@ -47,8 +51,8 @@ public class Position {
 		return this;
 	}
 	
-	public void incAsset(UUID uuid, Trade buy) {
-		trades.put(uuid, buy);
+	public void incAsset(Trade buy) {
+		trades.put(buy.getUuid(), buy);
 		quantity += buy.getQuantity();
 	}
 	
@@ -61,8 +65,8 @@ public class Position {
 	 * @param ticker
 	 * @param result
 	 */
-	public void decAsset(UUID uuid, Trade buy) {
-		trades.remove(uuid);
+	public void decAsset(Trade buy) {
+		trades.remove(buy.getUuid());
 	}
 
 	public List<Result> getProfits() {
@@ -95,9 +99,9 @@ public class Position {
 	 */
 	public void process(Trade trade) {
 		if (trade.getTotalTradeValue() > 0) {
-			this.incAsset(trade.getUuid(), trade);
+			this.incAsset(trade);
 		} else {
-			this.decAsset(trade.getUuid(), trade);
+			this.decAsset(trade);
 		}
 	}
 

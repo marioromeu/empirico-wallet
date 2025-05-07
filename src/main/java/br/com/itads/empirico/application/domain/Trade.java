@@ -36,12 +36,14 @@ public final class Trade {
 	private Asset asset;
 
 	public Trade(
+			UUID uuid,
 			String description,
 			LocalDateTime datetime,
 			Double quantity,
 			Double price,
 			Asset asset) {
 
+		this.uuid = uuid;
 		this.description = description;
 		this.datetime = datetime;
 		this.quantity = quantity;
