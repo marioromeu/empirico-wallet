@@ -16,7 +16,7 @@ public class Result {
 	/**
 	 * Momento em que o resultado foi entregue para a carteira
 	 */
-	LocalDateTime datetime;	
+	LocalDateTime datetime;
 	
 	/**
 	 * Valor do resultado

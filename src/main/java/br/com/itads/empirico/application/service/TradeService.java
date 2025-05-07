@@ -1,7 +1,6 @@
 package br.com.itads.empirico.application.service;
 
 import java.util.Objects;
-import java.util.UUID;
 
 import br.com.itads.empirico.application.domain.Position;
 import br.com.itads.empirico.application.domain.Result;
@@ -27,8 +26,8 @@ public class TradeService {
 	 *	1.2-VENDA		
 	 * @param trade
 	 */
-	public Position processTrade(Trade trade, UUID uuid) {
-		Position position = positionRepository.getBy(uuid);
+	public Position processTrade(Trade trade, String ticker) {
+		Position position = positionRepository.getBy(ticker);
 		if (Objects.isNull(position)) {
 			position = new Position(trade);
 		} else {
@@ -43,10 +42,10 @@ public class TradeService {
 	 * @param result
 	 * @param uuid
 	 */
-	public Position processResult(Result result, UUID positionUuid) {
-		Position position = positionRepository.getBy(positionUuid);
+	public Position processResult(Result result, String ticker) {
+		Position position = positionRepository.getBy(ticker);
 		if (Objects.nonNull(position)) {
-			position.addResult(null, result);
+			position.addResult(ticker, result);
 		}
 		return position;
 	}
@@ -57,6 +56,10 @@ public class TradeService {
 	 */
 	public void saveTrade(Trade trade) {
 		tradeRepository.saveOrUpdate(trade);
+	}
+
+	public Position getPosition(String ticker) {
+		return positionRepository.getBy( ticker );
 	}
 	
 }

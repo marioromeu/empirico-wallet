@@ -2,8 +2,6 @@ package br.com.itads.empirico.application.service;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 
 import br.com.itads.empirico.application.domain.Asset;
