@@ -2,24 +2,29 @@ package br.com.itads.empirico.application.service;
 
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
+
 import org.junit.jupiter.api.Test;
 
-import br.com.itads.empirico.application.domain.Asset;
-import br.com.itads.empirico.application.domain.Position;
-import br.com.itads.empirico.application.domain.Trade;
-import br.com.itads.empirico.application.domain.Wallet;
-import br.com.itads.empirico.application.repository.WalletRepository;
+import br.com.itads.empirico.adapters.out.repository.file.PositionRepositoryImpl;
+import br.com.itads.empirico.adapters.out.repository.file.WalletRepositoryImpl;
+import br.com.itads.empirico.application.core.domain.Asset;
+import br.com.itads.empirico.application.core.domain.Position;
+import br.com.itads.empirico.application.core.domain.Trade;
+import br.com.itads.empirico.application.core.domain.Wallet;
+import br.com.itads.empirico.application.core.service.WalletService;
+import br.com.itads.empirico.application.ports.out.repository.PositionRepository;
+import br.com.itads.empirico.application.ports.out.repository.WalletRepository;
 import br.com.itads.empirico.mock.MockBuilderForTestsJunit;
-import br.com.itads.empirico.repository.WalletRepositoryImpl;
 
-public class WalletServiceTest {
+class WalletServiceTest {
 
-	//WalletRepository repository = mock(WalletRepository.class);
-	WalletRepository repository = WalletRepositoryImpl.INSTANCE;
+	WalletRepository walletRepository = WalletRepositoryImpl.INSTANCE;
+	PositionRepository positionRepository = PositionRepositoryImpl.INSTANCE;
 	WalletService walletService;
 
 	public WalletServiceTest() {
-		walletService = new WalletService(repository);
+		walletService = new WalletService(walletRepository, positionRepository);
 	}
 
 	/**
@@ -31,7 +36,7 @@ public class WalletServiceTest {
 	void RF02_consolidateWallet() {
 		Wallet wallet = MockBuilderForTestsJunit.buildFullWallet();
 		wallet.consolidate();		
-		assertTrue( wallet.getConsolidatedValue() > 0);
+		assertTrue( wallet.getConsolidatedValue().compareTo(BigDecimal.ZERO) > 0);
 	}
 
 	/**
@@ -46,20 +51,20 @@ public class WalletServiceTest {
 		Asset bitcoin = MockBuilderForTestsJunit.buildAssetBTC();
 		Trade buyBTC = MockBuilderForTestsJunit.buildBuyTrade(bitcoin);
 
-		Position positionToTest = MockBuilderForTestsJunit.buildPosition(buyBTC);
+		Position positionToTest = MockBuilderForTestsJunit.buildPosition(bitcoin.getTicker());
 		wallet.updatePosition(positionToTest);
 		wallet.consolidate();
 
-		Double consolidatedValue = wallet.getConsolidatedValue();		
-		assertTrue( consolidatedValue > 0);
+		BigDecimal consolidatedValue = wallet.getConsolidatedValue();		
+		assertTrue( consolidatedValue.compareTo(BigDecimal.ZERO) > 0);
 
 		positionToTest.addResult("BTC", MockBuilderForTestsJunit.buildProfitResult());
 		wallet.updatePosition(positionToTest);
 		wallet.consolidate();
 
-		Double consolidatedValuePlusEarn = wallet.getConsolidatedValue();
+		BigDecimal consolidatedValuePlusEarn = wallet.getConsolidatedValue();
 
-		assertTrue( consolidatedValuePlusEarn > consolidatedValue);
+		assertTrue( consolidatedValuePlusEarn.compareTo(consolidatedValue) > 0);
 
 	}
 

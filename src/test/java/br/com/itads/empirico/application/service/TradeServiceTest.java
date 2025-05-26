@@ -7,14 +7,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import org.junit.jupiter.api.Test;
 
-import br.com.itads.empirico.application.domain.Asset;
-import br.com.itads.empirico.application.domain.Position;
-import br.com.itads.empirico.application.domain.Result;
-import br.com.itads.empirico.application.domain.Trade;
-import br.com.itads.empirico.application.repository.PositionRepository;
-import br.com.itads.empirico.application.repository.TradeRepository;
+import br.com.itads.empirico.application.core.domain.Asset;
+import br.com.itads.empirico.application.core.domain.Position;
+import br.com.itads.empirico.application.core.domain.Result;
+import br.com.itads.empirico.application.core.domain.Trade;
+import br.com.itads.empirico.application.core.service.TradeService;
+import br.com.itads.empirico.application.ports.out.repository.PositionRepository;
+import br.com.itads.empirico.application.ports.out.repository.TradeRepository;
 import br.com.itads.empirico.mock.MockBuilderForTestsJunit;
 
 class TradeServiceTest {
@@ -40,10 +44,10 @@ class TradeServiceTest {
 		Asset bitcoin = MockBuilderForTestsJunit.buildAssetBTC();
 		Trade trade = MockBuilderForTestsJunit.buildBuyTrade(bitcoin);
 		
-		when(positionRepository.getBy(any())).thenReturn(MockBuilderForTestsJunit.buildPosition(trade));		
+		when(positionRepository.getBy(any())).thenReturn(MockBuilderForTestsJunit.buildPosition(bitcoin.getTicker()));		
 		Position position = tradeService.processTrade(trade, bitcoin.getTicker());
 		position.consolidate();
-		assertNotNull(position);		
+		assertNotNull(position);
 	}
 
 	@Test
@@ -53,8 +57,9 @@ class TradeServiceTest {
 		
 		when(positionRepository.getBy(any())).thenReturn(null);		
 		Position position = tradeService.processTrade(trade, bitcoin.getTicker());
+		position.incAsset(trade);
 		position.consolidate();
-		assertTrue(position.getPositionTotalPrice() > 0);		
+		assertTrue(position.getPositionTotalPrice().compareTo(BigDecimal.ZERO) > 0);		
 	}	
 
 	@Test
@@ -64,31 +69,33 @@ class TradeServiceTest {
 		Trade trade2 = MockBuilderForTestsJunit.buildBuyTrade(bitcoin);
 		Trade trade3 = MockBuilderForTestsJunit.buildBuyTrade(bitcoin);
 
-		Double sumOfPositions = 0d;
+		BigDecimal sumOfPositions = BigDecimal.ZERO;
 		
-		when(positionRepository.getBy(any())).thenReturn(MockBuilderForTestsJunit.buildPosition(trade1));		
-		Position position1 = tradeService.processTrade(trade1, bitcoin.getTicker());
-		position1.consolidate();
-		sumOfPositions += trade1.getTotalTradeValue();
-		assertNotNull(position1);
+		when(positionRepository.getBy(any())).thenReturn(MockBuilderForTestsJunit.buildPosition(bitcoin.getTicker()));		
+		Position position = tradeService.processTrade(trade1, bitcoin.getTicker());
+		position.consolidate();
+		sumOfPositions = sumOfPositions.add( trade1.getTotalTradeValue() );
+		assertNotNull(position);
 
-		when(positionRepository.getBy(any())).thenReturn(MockBuilderForTestsJunit.buildPosition(trade2));
-		Position position2 = tradeService.processTrade(trade2, bitcoin.getTicker());
-		position2.consolidate();
-		sumOfPositions += trade2.getTotalTradeValue();
-		assertNotNull(position2);
+		when(positionRepository.getBy(any())).thenReturn( position );
+		position = tradeService.processTrade(trade2, bitcoin.getTicker());
+		position.consolidate();
+		sumOfPositions = sumOfPositions.add( trade2.getTotalTradeValue() );
+		assertNotNull(position);
 		
-		when(positionRepository.getBy(any())).thenReturn(MockBuilderForTestsJunit.buildPosition(trade3));
-		Position position3 = tradeService.processTrade(trade3, bitcoin.getTicker());
-		position3.consolidate();
-		sumOfPositions += trade3.getTotalTradeValue();
-		assertNotNull(position3);
+		when(positionRepository.getBy(any())).thenReturn( position );
+		position = tradeService.processTrade(trade3, bitcoin.getTicker());
+		position.consolidate();
+		sumOfPositions = sumOfPositions.add( trade3.getTotalTradeValue() );
+		assertNotNull(position);
 
-		Position consolidatedPosition = tradeService.getPosition(bitcoin.getTicker());
-		
-		assertNotNull(consolidatedPosition);
-		assertEquals(consolidatedPosition.getPositionTotalPrice(), sumOfPositions);
-		assertTrue(consolidatedPosition.getPositionAveragePrice().equals((sumOfPositions/3)));
+		assertEquals(position.getPositionTotalPrice(), sumOfPositions);
+
+		assertTrue(
+				position.getPositionAveragePrice().equals( 
+						sumOfPositions.divide(new BigDecimal(3)) 
+				)
+		);
 
 	}
 	
@@ -99,18 +106,76 @@ class TradeServiceTest {
 	 * @param result
 	 * @param uuid
 	 */
+	@Test
 	void RF01_13_processResult_with_position_ok() {
 		Result result = MockBuilderForTestsJunit.buildProfitResult();
 
 		Asset bitcoin = MockBuilderForTestsJunit.buildAssetBTC();
 		Trade buyBtc = MockBuilderForTestsJunit.buildBuyTrade(bitcoin);
 		
-		Position position = MockBuilderForTestsJunit.buildPosition(buyBtc);
+		Position position = MockBuilderForTestsJunit.buildPosition(bitcoin.getTicker());
+		position.incAsset(buyBtc);
 
 		when(positionRepository.getBy(any())).thenReturn(position);
 
 		position = tradeService.processResult(result, bitcoin.getTicker());		
-		assertNotNull(position);
+		position.consolidate();
+		
+		BigDecimal totalPlusResult = buyBtc.getTotalTradeValue().add( result.getPrice() );
+		
+		assertEquals(totalPlusResult, position.getPositionTotalPrice());
+		
 	}
 
+	/**
+	 * 2 Buy and 2 Sell of only one asset.
+	 */
+	@Test
+	void RF01_11_and_12_and_13_processTrade_with_position_ok_two_or_more_buy_and_sell() {
+		
+		Asset bitcoin = MockBuilderForTestsJunit.buildAssetBTC();
+		
+		Trade buyTrade1   = MockBuilderForTestsJunit.buildBuyTrade(bitcoin);
+		Trade sellTrade2  = MockBuilderForTestsJunit.buildSellTrade(bitcoin);
+		Trade buyTrade3  = MockBuilderForTestsJunit.buildBuyTrade(bitcoin);
+		Trade sellTrade4 = MockBuilderForTestsJunit.buildSellTrade(bitcoin);
+
+		Result result = MockBuilderForTestsJunit.buildProfitResult();
+		
+		BigDecimal sumOfPositions = BigDecimal.ZERO;
+		
+		when(positionRepository.getBy(any())).thenReturn(MockBuilderForTestsJunit.buildPosition(bitcoin.getTicker()));		
+		Position position = tradeService.processTrade(buyTrade1, bitcoin.getTicker());
+		position.consolidate();
+		sumOfPositions = sumOfPositions.add( buyTrade1.getTotalTradeValue());
+		assertNotNull(position);
+
+		when(positionRepository.getBy(any())).thenReturn( position );
+		position = tradeService.processTrade(sellTrade2, bitcoin.getTicker());
+		position.consolidate();
+		sumOfPositions = sumOfPositions.add(sellTrade2.getTotalTradeValue());
+		assertNotNull(position);
+		
+		when(positionRepository.getBy(any())).thenReturn( position );
+		position = tradeService.processTrade(buyTrade3, bitcoin.getTicker());
+		position.consolidate();
+		sumOfPositions = sumOfPositions.add(buyTrade3.getTotalTradeValue());
+		assertNotNull(position);
+
+		when(positionRepository.getBy(any())).thenReturn( position );
+		position = tradeService.processTrade(sellTrade4, bitcoin.getTicker());
+		position.consolidate();
+		sumOfPositions = sumOfPositions.add( sellTrade4.getTotalTradeValue() );
+		assertNotNull(position);		
+
+		assertEquals(position.getPositionTotalPrice(), sumOfPositions);
+		
+		position = tradeService.processResult(result, bitcoin.getTicker());		
+		position.consolidate();
+		sumOfPositions = sumOfPositions.add(result.getPrice());
+		
+		assertEquals(position.getPositionTotalPrice(), sumOfPositions);
+
+	}	
+	
 }
