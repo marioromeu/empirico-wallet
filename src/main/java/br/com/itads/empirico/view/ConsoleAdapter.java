@@ -79,7 +79,7 @@ public class ConsoleAdapter {
 	}
 
 	private static Result earn(Asset petr4) {
-		return new Result(LocalDateTime.now(), new BigDecimal(8), "Dividendo", ResultTypeEnum.DIVIDENDO);
+		return new Result("PETR4", LocalDateTime.now(), new BigDecimal(8), "Dividendo", ResultTypeEnum.DIVIDENDO);
 	}
 
 	private static Trade buy(Asset asset, BigDecimal quantity, BigDecimal price) {

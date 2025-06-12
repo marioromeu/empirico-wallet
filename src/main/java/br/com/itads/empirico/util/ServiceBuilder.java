@@ -24,5 +24,5 @@ public class ServiceBuilder {
 	public static WalletService buildWalletService() {
 		return new WalletService(WalletRepositoryImpl.INSTANCE, PositionRepositoryImpl.INSTANCE);
 	}
-	
+
 }

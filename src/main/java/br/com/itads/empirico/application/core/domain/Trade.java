@@ -57,6 +57,9 @@ public final class Trade implements Serializable {
 	}
 
 	public BigDecimal getTotalTradeValue() {
+		if (BigDecimal.ZERO.equals(quantity)) {
+			return price; 
+		}
 		return quantity.multiply( price );
 	}
 
@@ -68,9 +71,24 @@ public final class Trade implements Serializable {
 		return uuid;
 	}
 
-
 	public BigDecimal getQuantity() {
 		return quantity;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public LocalDateTime getDatetime() {
+		return datetime;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
 	}	
-	
+
 }

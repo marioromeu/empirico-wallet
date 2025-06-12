@@ -9,17 +9,17 @@ public class User implements Serializable {
 	/**
 	 * Nome do usuário
 	 */
-	String name;
+	private String name;
 	
 	/**
 	 * username para acesso
 	 */
-	String username;
+	private String username;
 	
 	/**
 	 * senha para acesso
 	 */
-	String password;
+	private String password;
 	
 
 	public User(String name, String username) {
@@ -34,6 +34,13 @@ public class User implements Serializable {
 	 */
 	public void follow(Recommendation rec, Trade trade) {
 	}
-	
+
+	public String getName() {
+		return name;
+	}
+
+	public String getUsername() {
+		return username;
+	}
 
 }

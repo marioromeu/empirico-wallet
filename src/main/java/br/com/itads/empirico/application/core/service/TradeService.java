@@ -30,9 +30,10 @@ public class TradeService {
 		Position position = positionRepository.getBy(ticker);
 		if (Objects.isNull(position)) {
 			position = new Position(ticker);
-		} else {
-			position.incAsset(trade);
 		}
+
+		position = position.incAsset(trade);
+		
 		positionRepository.saveOrUpdate(position);
 		return position;
 	}
@@ -45,9 +46,12 @@ public class TradeService {
 	 */
 	public Position processResult(Result result, String ticker) {
 		Position position = positionRepository.getBy(ticker);
-		if (Objects.nonNull(position)) {
-			position.addResult(ticker, result);
+		if (Objects.isNull(position)) {
+			position = new Position(ticker);
 		}
+		
+		position = position.addResult(result);
+		
 		positionRepository.saveOrUpdate(position);
 		return position;
 	}

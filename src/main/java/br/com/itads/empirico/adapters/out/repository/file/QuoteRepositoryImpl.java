@@ -44,6 +44,10 @@ public class QuoteRepositoryImpl extends FileRepository<List<Quote>> implements 
 		}
 		return null;
 	}
-	
+
+	@Override
+	public List<Quote> getListOfQuotes(String symbol) {
+		return internalList;
+	}	
 	
 }

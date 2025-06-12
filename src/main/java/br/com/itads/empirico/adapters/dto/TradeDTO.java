@@ -19,6 +19,16 @@ public class TradeDTO {
 	private String assetDescription;
 	private String assetClass;
 	
+	public TradeDTO(Trade trade) {
+		this.uuid = trade.getUuid();
+		this.datetime = trade.getDatetime();
+		this.quantity = trade.getQuantity();
+		this.price = trade.getPrice();
+		this.assetTicker = trade.getAsset().getTicker();
+		this.assetDescription = trade.getAsset().getDescription();
+		this.assetClass = trade.getAsset().getType().name();
+	}
+	
 	public TradeDTO(
 		UUID uuid,
 		String description,

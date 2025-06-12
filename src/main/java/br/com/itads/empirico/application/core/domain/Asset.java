@@ -25,4 +25,12 @@ public class Asset implements Serializable {
 		return ticker;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public AssetClassEnum getType() {
+		return type;
+	}
+	
 }

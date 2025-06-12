@@ -11,7 +11,7 @@ import br.com.itads.empirico.adapters.out.repository.file.config.FilePathConfig;
 
 public abstract class FileRepository<T> {
 
-	String filePath = FilePathConfig.getFilePath();
+	String filePath = FilePathConfig.getFilePath("filepath");
 	String fileName;
 	
 	protected FileRepository(String fileNameParam) {

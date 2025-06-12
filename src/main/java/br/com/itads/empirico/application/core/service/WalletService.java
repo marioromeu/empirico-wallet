@@ -8,21 +8,26 @@ import br.com.itads.empirico.application.core.domain.User;
 import br.com.itads.empirico.application.core.domain.Wallet;
 import br.com.itads.empirico.application.ports.out.repository.PositionRepository;
 import br.com.itads.empirico.application.ports.out.repository.WalletRepository;
+import br.com.itads.empirico.view.SessionThreadLocal;
 
 public class WalletService {
 
-	WalletRepository repository;
+	WalletRepository walletRepository;
 	PositionRepository positionRepository;
 	
 	public WalletService(WalletRepository repository, PositionRepository positionRepository) {
-		this.repository = repository;
+		this.walletRepository = repository;
 		this.positionRepository = positionRepository;
 	}
 
 	public void updatePosition(UUID uuid, Position position) {		
-		Wallet wallet = repository.getBy(uuid);		
+		Wallet wallet = walletRepository.getBy(uuid);
+		if (Objects.isNull(wallet)) {
+			wallet = new Wallet(uuid, SessionThreadLocal.INSTANCE.get());
+		}
 		wallet.updatePosition(position);
-		repository.saveOrUpdate(wallet);
+		positionRepository.saveOrUpdate(position);
+		walletRepository.saveOrUpdate(wallet);
 	}	
 	
 	/**
@@ -32,9 +37,9 @@ public class WalletService {
 	 * 
 	 */
 	public void consolidateWallet(UUID uuid) {		
-		Wallet wallet = repository.getBy(uuid);		
+		Wallet wallet = walletRepository.getBy(uuid);		
 		wallet.consolidate();
-		repository.saveOrUpdate(wallet);
+		walletRepository.saveOrUpdate(wallet);
 	}
 
 	
@@ -50,20 +55,20 @@ public class WalletService {
 		 * TODO converter para um DTO especifico ?
 		 * OU devolver o dominio (responsabilidade do service) e o cliente converte (acho que eh isso)?
 		 */
-		return repository.getBy(uuid); 
+		return walletRepository.getBy(uuid); 
 	}
 
 	public Wallet getWallet(UUID uuid, User user) {		
-		Wallet wallet = repository.getBy(uuid);
+		Wallet wallet = walletRepository.getBy(uuid);
 		if ( Objects.isNull(wallet)) {
 			wallet = new Wallet(uuid, user);
-			repository.saveOrUpdate(wallet);
+			walletRepository.saveOrUpdate(wallet);
 		}
 		return wallet;
 	}
 
 	public Wallet saveWallet(Wallet wallet) {		
-		return repository.saveOrUpdate(wallet);
+		return walletRepository.saveOrUpdate(wallet);
 	}	
 	
 }

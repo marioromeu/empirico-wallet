@@ -10,7 +10,6 @@ import br.com.itads.empirico.adapters.out.repository.file.PositionRepositoryImpl
 import br.com.itads.empirico.adapters.out.repository.file.WalletRepositoryImpl;
 import br.com.itads.empirico.application.core.domain.Asset;
 import br.com.itads.empirico.application.core.domain.Position;
-import br.com.itads.empirico.application.core.domain.Trade;
 import br.com.itads.empirico.application.core.domain.Wallet;
 import br.com.itads.empirico.application.core.service.WalletService;
 import br.com.itads.empirico.application.ports.out.repository.PositionRepository;
@@ -49,7 +48,6 @@ class WalletServiceTest {
 		Wallet wallet = MockBuilderForTestsJunit.buildFullWallet();
 
 		Asset bitcoin = MockBuilderForTestsJunit.buildAssetBTC();
-		Trade buyBTC = MockBuilderForTestsJunit.buildBuyTrade(bitcoin);
 
 		Position positionToTest = MockBuilderForTestsJunit.buildPosition(bitcoin.getTicker());
 		wallet.updatePosition(positionToTest);
@@ -58,7 +56,7 @@ class WalletServiceTest {
 		BigDecimal consolidatedValue = wallet.getConsolidatedValue();		
 		assertTrue( consolidatedValue.compareTo(BigDecimal.ZERO) > 0);
 
-		positionToTest.addResult("BTC", MockBuilderForTestsJunit.buildProfitResult());
+		positionToTest.addResult( MockBuilderForTestsJunit.buildProfitResult() );
 		wallet.updatePosition(positionToTest);
 		wallet.consolidate();
 

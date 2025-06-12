@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import org.junit.jupiter.api.Test;
 
@@ -121,7 +120,7 @@ class TradeServiceTest {
 		position = tradeService.processResult(result, bitcoin.getTicker());		
 		position.consolidate();
 		
-		BigDecimal totalPlusResult = buyBtc.getTotalTradeValue().add( result.getPrice() );
+		BigDecimal totalPlusResult = buyBtc.getTotalTradeValue().add( result.price() );
 		
 		assertEquals(totalPlusResult, position.getPositionTotalPrice());
 		
@@ -172,7 +171,7 @@ class TradeServiceTest {
 		
 		position = tradeService.processResult(result, bitcoin.getTicker());		
 		position.consolidate();
-		sumOfPositions = sumOfPositions.add(result.getPrice());
+		sumOfPositions = sumOfPositions.add(result.price());
 		
 		assertEquals(position.getPositionTotalPrice(), sumOfPositions);
 

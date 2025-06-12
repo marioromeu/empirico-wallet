@@ -3,7 +3,6 @@ package br.com.itads.empirico.application.core.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -52,10 +51,13 @@ public class Wallet implements Serializable {
 	 * Método para consolidar todos os valores das posições e atualizar o valor total da carteira.
 	 */
 	public void consolidate() {
-		positionAssets.entrySet().stream().forEach(entryPosition -> {
+		consolidatedValue = BigDecimal.ZERO;
+		
+		for (Map.Entry<String, Position> entryPosition : positionAssets.entrySet()) {
 			entryPosition.getValue().consolidate();
 			consolidatedValue = consolidatedValue.add(entryPosition.getValue().getPositionTotalPrice());
-		});		
+		}
+
 	}
 	
 	/**
@@ -106,6 +108,14 @@ public class Wallet implements Serializable {
 		System.out.println();
 		System.out.println("---------------------------- WALLET CONSOLIDATED -------------------------------");
 		
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public User getUser() {
+		return user;
 	}
 	
 }

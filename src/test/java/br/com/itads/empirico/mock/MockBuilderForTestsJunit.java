@@ -28,7 +28,7 @@ public class MockBuilderForTestsJunit {
 	}
 
 	public static Result buildProfitResult() {
-		return new Result(LocalDateTime.now(), new BigDecimal(0.10), "earning", ResultTypeEnum.RENDIMENTO);
+		return new Result("BTC", LocalDateTime.now(), new BigDecimal(0.10), "earning", ResultTypeEnum.RENDIMENTO);
 	}
 
 	public static Wallet buildFullWallet() {

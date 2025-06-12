@@ -14,7 +14,7 @@ public class AssetService {
 		this.assetRepository = assetRepository;
 	}
 
-	public void saveTrade(Asset asset) {
+	public void saveOrUpdate(Asset asset) {
 		assetRepository.saveOrUpdate(asset);
 	}
 
@@ -22,7 +22,7 @@ public class AssetService {
 		Asset asset = assetRepository.getBy( ticker );
 		if ( Objects.isNull(asset)) {
 			asset  = new Asset(ticker, ticker, AssetClassEnum.INDEFINIDA);
-			saveTrade(asset);
+			saveOrUpdate(asset);
 		}
 		return asset; 
 	}

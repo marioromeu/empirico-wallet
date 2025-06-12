@@ -26,12 +26,22 @@ public class Position implements Serializable {
 	 * Preço médio de uma posição
 	 */
 	private BigDecimal averagePrice = BigDecimal.ZERO;
+
+	/**
+	 * Preço médio de uma posição
+	 */
+	private BigDecimal averagePriceWithResults = BigDecimal.ZERO;	
 	
 	/**
 	 * Preço total de uma posição
 	 */
 	private BigDecimal totalPrice = BigDecimal.ZERO;
 
+	/**
+	 * Preço total de uma posição
+	 */
+	private BigDecimal totalPriceWithResults = BigDecimal.ZERO;
+	
 	/**
 	 * Lista dos trades realizados sobre o ativo
 	 */
@@ -48,19 +58,28 @@ public class Position implements Serializable {
 	
 	public void consolidate() {
 		totalPrice = BigDecimal.ZERO;
+		totalPriceWithResults = BigDecimal.ZERO;
 		
 		/* Get all trades */
 		this.trades.entrySet().stream().forEach(trade -> {
 			totalPrice = totalPrice.add(trade.getValue().getTotalTradeValue());
 		});
+		/* calc average price of position */
+		averagePrice = totalPrice.divide(quantity, RoundingMode.HALF_UP);//16.84
 		
+		totalPriceWithResults = totalPrice;
+
 		/* Get all results */
 		this.results.stream().forEach(result -> {
-			totalPrice = totalPrice.add(result.getPrice());
+			totalPriceWithResults = totalPriceWithResults.add(result.price());
 		});
+
+		BigDecimal resultPrice = getResultPrice();
+		BigDecimal totalPriceSubResults = totalPrice.subtract(resultPrice);
 		
 		/* calc average price of position */
-		averagePrice = totalPrice.divide(quantity, RoundingMode.HALF_UP);
+		averagePriceWithResults = totalPriceSubResults.divide(quantity, RoundingMode.HALF_UP);//16.84
+
 	}
 	
 	public Position mergeTrades(Position newPosition) {
@@ -68,13 +87,15 @@ public class Position implements Serializable {
 		return this;
 	}
 	
-	public void incAsset(Trade buy) {
+	public Position incAsset(Trade buy) {
 		trades.put(buy.getUuid(), buy);
 		quantity = quantity.add(buy.getQuantity());
+		return this;
 	}
 	
-	public void addResult(String ticker, Result result) {
+	public Position addResult(Result result) {
 		results.add(result);
+		return this;
 	}
 
 	public List<Result> getProfits() {
@@ -112,15 +133,25 @@ public class Position implements Serializable {
 	public BigDecimal getPositionTotalPrice() {
 		return totalPrice;
 	}
-	
-	public BigDecimal getPositionAveragePriceWithResults() {		
-		return averagePrice.add( (getResultPrice().divide(quantity)) );
+
+	public BigDecimal getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(BigDecimal quantity) {
+		this.quantity = quantity;
+	}
+
+	public BigDecimal getPositionAveragePriceWithResults() {
+		BigDecimal result = getResultPrice();
+		BigDecimal divided = result.divide(quantity, RoundingMode.HALF_UP);
+		return averagePrice.subtract( divided );
 	}
 
 	private BigDecimal getResultPrice() {
 		BigDecimal resultPrice =BigDecimal.ZERO;
 		for (Result resultParam : results) {
-			resultPrice.add( resultParam.getPrice() );	
+			resultPrice = resultPrice.add( resultParam.price() );	
 		}
 		return resultPrice;
 	}

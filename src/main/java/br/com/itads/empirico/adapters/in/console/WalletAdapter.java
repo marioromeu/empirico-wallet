@@ -2,14 +2,17 @@ package br.com.itads.empirico.adapters.in.console;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import br.com.itads.empirico.adapters.dto.DashboardDTO;
 import br.com.itads.empirico.adapters.dto.WalletDTO;
 import br.com.itads.empirico.application.core.domain.Position;
 import br.com.itads.empirico.application.core.domain.User;
+import br.com.itads.empirico.application.core.domain.Wallet;
 import br.com.itads.empirico.application.core.service.WalletService;
 import br.com.itads.empirico.application.ports.in.PortWallet;
+import br.com.itads.empirico.view.SessionThreadLocal;
 
 public class WalletAdapter implements PortWallet {
 
@@ -39,6 +42,26 @@ public class WalletAdapter implements PortWallet {
 	@Override
 	public DashboardDTO dashboard() {
 		return new DashboardDTO();
+	}
+
+	public void updatePosition(UUID uuid, Position position) {
+		walletService.updatePosition(uuid, position);		
+	}
+
+	public void consolidateWallet(UUID uuid) {
+		Wallet wallet = getWallet(uuid, SessionThreadLocal.INSTANCE.get());
+		if (Objects.nonNull(wallet)) {
+			WalletDTO dto = new WalletDTO(uuid, SessionThreadLocal.INSTANCE.get());
+			consolidate(dto);
+		}
+	}
+
+	public Wallet getWallet(UUID uuid, User user) {
+		return walletService.getWallet(uuid, user);
+	}
+
+	public Wallet doDashboard(UUID uuid) {
+		return walletService.doDashboard(uuid);
 	}
 
 }
