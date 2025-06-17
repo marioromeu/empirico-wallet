@@ -1,8 +1,8 @@
 package br.com.itads.empirico.util;
 
-import br.com.itads.empirico.adapters.in.console.AssetAdapter;
-import br.com.itads.empirico.adapters.in.console.TradeAdapter;
-import br.com.itads.empirico.adapters.in.console.WalletAdapter;
+import br.com.itads.empirico.adapters.in.AssetAdapter;
+import br.com.itads.empirico.adapters.in.TradeAdapter;
+import br.com.itads.empirico.adapters.in.WalletAdapter;
 
 public class AdapterBuilder {
 

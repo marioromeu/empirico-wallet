@@ -122,7 +122,7 @@ class TradeServiceTest {
 		
 		BigDecimal totalPlusResult = buyBtc.getTotalTradeValue().add( result.price() );
 		
-		assertEquals(totalPlusResult, position.getPositionTotalPrice());
+		assertEquals(totalPlusResult, position.getPositionTotalPriceWithResults());
 		
 	}
 
@@ -173,8 +173,8 @@ class TradeServiceTest {
 		position.consolidate();
 		sumOfPositions = sumOfPositions.add(result.price());
 		
-		assertEquals(position.getPositionTotalPrice(), sumOfPositions);
+		assertEquals(position.getPositionTotalPriceWithResults(), sumOfPositions);
 
-	}	
+	}
 	
 }

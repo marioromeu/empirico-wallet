@@ -91,24 +91,6 @@ public class Wallet implements Serializable {
 	public UUID getUuid() {
 		return uuid;
 	}
-	
-	public void print() {
-		
-		System.out.println();
-		System.out.println();
-		System.out.println("---------------------------- WALLET CONSOLIDATED -------------------------------");
-		System.out.println();
-		System.out.println(" Total Value = " + this.getConsolidatedValue());
-		System.out.println();
-		System.out.println("-------------------- WALLET CONSOLIDATED BY ASSET CLASS  -----------------------");
-		System.out.println();
-		this.getPositionByAssetClass().entrySet().forEach(key -> {
-			System.out.println("     Total em " + key.getValue().getAssetTicker() + " = " + key.getValue().getPositionTotalPrice());
-		});
-		System.out.println();
-		System.out.println("---------------------------- WALLET CONSOLIDATED -------------------------------");
-		
-	}
 
 	public String getName() {
 		return name;

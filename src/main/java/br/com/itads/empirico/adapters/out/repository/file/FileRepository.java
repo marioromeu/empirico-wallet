@@ -21,9 +21,7 @@ public abstract class FileRepository<T> {
 			if (!f.exists()) {
 				f.createNewFile();
 			} else {
-				if (f.canRead() && f.canWrite()) {
-					System.out.println( f.getAbsoluteFile() + " ok to process ");
-				} else {
+				if (!f.canRead() || !f.canWrite()) {
 					throw new RuntimeException(f.getAbsoluteFile() + "hasn't permission to read or write");
 				}
 			}
@@ -45,7 +43,6 @@ public abstract class FileRepository<T> {
         try (FileOutputStream fileOut = new FileOutputStream(fileName);
              ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
             out.writeObject(obj);
-            System.out.println("Objeto gravado com sucesso!");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,12 +50,17 @@ public abstract class FileRepository<T> {
 
     public Object readObjectFromFile(String fileName) {
         Object obj = null;
-        try (FileInputStream fileIn = new FileInputStream(fileName);
-             ObjectInputStream in = new ObjectInputStream(fileIn)) {
-            obj = in.readObject();
-            System.out.println("Objeto lido com sucesso!");
+        try {        	
+        	if (new File(fileName).exists()) {        
+        		FileInputStream fileIn = new FileInputStream(fileName);        			
+             	ObjectInputStream in = new ObjectInputStream(fileIn);
+             	obj = in.readObject();
+        	} else {
+        		new File(fileName).createNewFile();
+        		return readObjectFromFile(fileName);
+        	}
         } catch (IOException | ClassNotFoundException e) {
-        	System.out.println(fileName + " -> " + e.getMessage() );
+        	e.printStackTrace();
         }
         return obj;
     }	

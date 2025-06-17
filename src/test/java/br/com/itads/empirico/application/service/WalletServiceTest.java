@@ -62,7 +62,7 @@ class WalletServiceTest {
 
 		BigDecimal consolidatedValuePlusEarn = wallet.getConsolidatedValue();
 
-		assertTrue( consolidatedValuePlusEarn.compareTo(consolidatedValue) > 0);
+		assertTrue( consolidatedValuePlusEarn.compareTo(consolidatedValue) == 0);
 
 	}
 

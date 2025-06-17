@@ -8,7 +8,7 @@ import br.com.itads.empirico.application.core.domain.User;
 import br.com.itads.empirico.application.core.domain.Wallet;
 import br.com.itads.empirico.application.ports.out.repository.PositionRepository;
 import br.com.itads.empirico.application.ports.out.repository.WalletRepository;
-import br.com.itads.empirico.view.SessionThreadLocal;
+import br.com.itads.empirico.view.console.SessionThreadLocal;
 
 public class WalletService {
 
