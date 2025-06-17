@@ -3,6 +3,7 @@ package br.com.itads.empirico.view.web.server.strategy.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,6 +11,7 @@ import com.sun.net.httpserver.HttpExchange;
 
 import br.com.itads.empirico.adapters.dto.DashboardDTO;
 import br.com.itads.empirico.adapters.in.WalletAdapter;
+import br.com.itads.empirico.application.core.domain.Position;
 import br.com.itads.empirico.application.core.domain.User;
 import br.com.itads.empirico.application.core.domain.Wallet;
 import br.com.itads.empirico.util.AdapterBuilder;
@@ -129,8 +131,8 @@ public class DashboardHtmlPage implements HtmlPage {
 		
 		Wallet wallet = walletAdapter.doDashboard(uuid);
 		
-        wallet.getPositionByAssetClass().entrySet().forEach( key -> {
-        	
+		for (Map.Entry<String, Position> key : wallet.getPositionByAssetClass().entrySet()) {
+
         	BigDecimal quote = AdapterBuilder.buildAssetAdapter().getLastAssetQuote(key.getKey()).getClosedPrice();
         	
         	String result = (quote.compareTo(key.getValue().getPositionTotalPrice())) < 0 ? "POSITIVO" : "NEGATIVO";
@@ -148,7 +150,7 @@ public class DashboardHtmlPage implements HtmlPage {
         			)
         	);
 
-        });
+		}
 
         return dataList;
 

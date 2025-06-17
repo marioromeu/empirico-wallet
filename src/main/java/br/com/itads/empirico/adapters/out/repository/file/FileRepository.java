@@ -50,17 +50,13 @@ public abstract class FileRepository<T> {
 
     public Object readObjectFromFile(String fileName) {
         Object obj = null;
-        try {        	
-        	if (new File(fileName).exists()) {        
-        		FileInputStream fileIn = new FileInputStream(fileName);        			
-             	ObjectInputStream in = new ObjectInputStream(fileIn);
-             	obj = in.readObject();
-        	} else {
-        		new File(fileName).createNewFile();
-        		return readObjectFromFile(fileName);
-        	}
+        try {
+    		FileInputStream fileIn = new FileInputStream(fileName);
+         	ObjectInputStream in = new ObjectInputStream(fileIn);
+         	obj = in.readObject();
+         	in.close();
         } catch (IOException | ClassNotFoundException e) {
-        	e.printStackTrace();
+        	System.out.println(e.getMessage());
         }
         return obj;
     }	

@@ -12,14 +12,16 @@ public class MainHttpServer {
 
 	public static void main(String[] args) throws IOException {
 
-		HttpServer server = HttpServer.create(new InetSocketAddress(8888), 0);
+		int port = 8888;
+		
+		HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
 		server.createContext("/empirico", new SimpleHttpHandler());
 		server.setExecutor(null); // usa o executor padrão
 
 		server.start();
 
-		System.out.println("Servidor iniciado em http://localhost:8080");
+		System.out.println("Servidor iniciado em http://localhost:"+port);
 
 	}
 
