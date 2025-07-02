@@ -24,7 +24,7 @@ public class WalletRepositoryImpl extends FileRepository<Map<UUID, Wallet>> impl
 	@Override
 	public Wallet saveOrUpdate(Wallet wallet) {
 		internalMap.put(wallet.getUuid(), wallet);
-		write(internalMap);
+		internalMap = write(internalMap);
 		return wallet;
 	}
 

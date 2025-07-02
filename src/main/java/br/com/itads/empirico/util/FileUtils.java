@@ -6,7 +6,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.PropertyResourceBundle;
@@ -47,8 +51,9 @@ public class FileUtils {
 			System.out.println("Nenhum arquivo CSV encontrado no diretório.");
 			return null;
 		}
-		for (File arquivo : arquivos) {			
-			lineDTOs.addAll( FileUtils.lerArquivoCSV(arquivo.getAbsolutePath() ) );
+		for (File arquivo : arquivos) {
+			List<LineDTO> list = lerArquivoCSV(arquivo.getAbsolutePath());
+			lineDTOs.addAll( list );
 		}
 		return lineDTOs;
 	}
@@ -72,7 +77,7 @@ public class FileUtils {
 			String[] valores = linha.split(";");
 			LineDTO lineDTO = new LineDTO(
 					valores[0],
-					valores[1],
+					FixUtils.fix(valores[1]),
 					valores[2],
 					new BigDecimal(valores[3]),
 					new BigDecimal(valores[4].replace(".", "").replace(",", ".")),
@@ -88,7 +93,17 @@ public class FileUtils {
 		}
 
 		br.close();
-		return lineDTOs;
+		List<LineDTO> myList = lineDTOs.stream()
+			    .sorted(Comparator.comparing(t -> {
+			    	LineDTO lineDTO = (LineDTO)	t;
+			        String dataString = lineDTO.data();
+			        LocalDateTime localDateTime = LocalDateTime.parse(dataString, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+			        return localDateTime;
+			    }))			    
+			    .toList();
+		 
+		 return myList;
+				
 	}	
 
 	public static void validateFile(String fileName) {

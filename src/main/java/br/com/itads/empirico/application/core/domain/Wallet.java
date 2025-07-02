@@ -6,10 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.tinylog.Logger;
+
 public class Wallet implements Serializable {
 
 	private static final long serialVersionUID = 8126885014554266414L;
-
+	
 	/**
 	 * Código unico da carteira
 	 */
@@ -54,8 +56,10 @@ public class Wallet implements Serializable {
 		consolidatedValue = BigDecimal.ZERO;
 		
 		for (Map.Entry<String, Position> entryPosition : positionAssets.entrySet()) {
+			Logger.info("Consolidando posição: " + entryPosition.getValue().getAssetTicker());
 			entryPosition.getValue().consolidate();
 			consolidatedValue = consolidatedValue.add(entryPosition.getValue().getPositionTotalPrice());
+			Logger.info("Posição consolidada : " + entryPosition.getValue().getAssetTicker() + "[" + consolidatedValue+"]");
 		}
 
 	}
@@ -67,7 +71,7 @@ public class Wallet implements Serializable {
 		return positionAssets;
 	}
 	
-	public void updatePosition(Position position) {
+	public Wallet updatePosition(Position position) {
 		Position p = positionAssets.get(position.getAssetTicker());
 		
 		if (p != null) {
@@ -77,6 +81,8 @@ public class Wallet implements Serializable {
 		}
 
 		positionAssets.put(position.getAssetTicker(), p);
+		
+		return this;
 
 	}
 	

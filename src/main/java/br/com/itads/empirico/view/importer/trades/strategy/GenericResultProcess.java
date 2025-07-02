@@ -12,8 +12,8 @@ import br.com.itads.empirico.view.importer.dto.LineDTO;
 
 public abstract class GenericResultProcess implements TradeProcess {
 
-	TradeAdapter tradeAdapter;	
-	WalletAdapter walletAdapter;
+	protected TradeAdapter tradeAdapter;	
+	protected WalletAdapter walletAdapter;
 
 	protected GenericResultProcess(TradeAdapter tradeAdapter, WalletAdapter walletAdapter) {
 		this.tradeAdapter  = tradeAdapter;

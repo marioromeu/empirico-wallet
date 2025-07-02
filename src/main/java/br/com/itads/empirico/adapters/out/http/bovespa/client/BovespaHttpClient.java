@@ -8,6 +8,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Comparator;
 
+import org.tinylog.Logger;
+
 import br.com.itads.empirico.adapters.out.http.bovespa.response.MarketDataResponse;
 import br.com.itads.empirico.adapters.out.http.bovespa.response.StockResult;
 import br.com.itads.empirico.adapters.out.repository.file.config.FilePathConfig;
@@ -33,12 +35,16 @@ public class BovespaHttpClient {
 				.build();
 		try {
 			HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-			MarketDataResponse marketDataResponse = 
+			
+			Logger.info("code = " + response.statusCode() + "body = " + response.body() );
+			
+ 			MarketDataResponse marketDataResponse = 
 					MarketDataResponse.fromJson(response.body());
 
 			return getLastQuoteFrom(marketDataResponse);
 
 		} catch (IOException | InterruptedException e) {
+			Logger.error("Error requesting quote for ticker {}: {}", ticker, e.getMessage());
 			throw new RuntimeException("Failed to request quote", e);
 		}
 	}

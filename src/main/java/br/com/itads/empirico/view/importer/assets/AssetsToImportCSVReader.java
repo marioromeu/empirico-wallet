@@ -32,6 +32,7 @@ public class AssetsToImportCSVReader {
 			String[] valores = line.split(";");
 			Asset asset = new Asset(valores[0], valores[1], AssetClassEnum.valueOf(valores[2]));
 
+			System.out.println("Encontrado o ativo " + asset.getTicker() + " do tipo " + asset.getType().name());
 			assetList.add(asset);
 		}
 
@@ -45,6 +46,7 @@ public class AssetsToImportCSVReader {
 			for (Asset asset : assetList) {
 				adapter.saveOrUpdate(asset);
 			}
+			System.out.println("Ativos atualizados com base no arquivo : " + assetsFileName);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

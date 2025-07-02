@@ -2,7 +2,7 @@ package br.com.itads.empirico.view.importer.dto;
 
 import java.math.BigDecimal;
 
-public record LineDTO(
+public record LineDTO (
 		String data, 
 		String papel, 
 		String descricao, 
@@ -14,5 +14,5 @@ public record LineDTO(
 		BigDecimal proventos, 
 		BigDecimal saldoProvento,
 		BigDecimal precoMedioComProventos) {
-		
-	}
+	
+}

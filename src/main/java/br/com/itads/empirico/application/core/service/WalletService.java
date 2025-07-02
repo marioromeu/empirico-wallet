@@ -25,7 +25,7 @@ public class WalletService {
 		if (Objects.isNull(wallet)) {
 			wallet = new Wallet(uuid, SessionThreadLocal.INSTANCE.get());
 		}
-		wallet.updatePosition(position);
+		wallet = wallet.updatePosition(position);
 		positionRepository.saveOrUpdate(position);
 		walletRepository.saveOrUpdate(wallet);
 	}	

@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import br.com.itads.empirico.adapters.in.WalletAdapter;
 import br.com.itads.empirico.util.AdapterBuilder;
 import br.com.itads.empirico.view.web.server.HttpSessionThreadLocal;
 import br.com.itads.empirico.view.web.server.strategy.HtmlPage;

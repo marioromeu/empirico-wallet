@@ -47,7 +47,7 @@ public class QuoteRepositoryImpl extends FileRepository<List<Quote>> implements 
 
 	@Override
 	public List<Quote> getListOfQuotes(String symbol) {
-		return internalList;
+		return internalList.stream().filter( ticker -> ticker.getAsset().getTicker().equals(symbol)).toList();
 	}	
 	
 }

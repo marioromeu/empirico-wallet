@@ -2,27 +2,30 @@ package br.com.itads.empirico.application.core.domain.enums;
 
 public enum ResultTypeEnum {
 
-	JCP, DIVIDENDO, RENDIMENTO, ALUGUEL, CORRETAGEM, COME_COTAS;
+	JCP, DIVIDENDO, RENDIMENTO, ALUGUEL, CORRETAGEM, COME_COTAS, RESTITUICAO;
 	
 	public static ResultTypeEnum getResultCategory(String resultCategory) {
 		switch (resultCategory) {
-		case "Dividendo": {
+		case "DIVIDENDO": {
 			return ResultTypeEnum.DIVIDENDO; 
 		}
-		case "Juros": {
+		case "JUROS": {
 			return ResultTypeEnum.JCP; 
 		}
-		case "Rendimento": {
+		case "RENDIMENTO": {
 			return ResultTypeEnum.RENDIMENTO; 
 		}
-		case "Aluguel": {
+		case "ALUGUEL": {
 			return ResultTypeEnum.ALUGUEL; 
 		}
-		case "Corretagem": {
+		case "CORRETAGEM": {
 			return ResultTypeEnum.CORRETAGEM; 
 		}
-		case "ComeCotas": {
+		case "COME_COTAS": {
 			return ResultTypeEnum.COME_COTAS; 
+		}
+		case "RESTITUICAO": {
+			return ResultTypeEnum.RESTITUICAO; 
 		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + resultCategory);

@@ -1,6 +1,5 @@
 package br.com.itads.empirico.view.importer.trades.strategy;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -15,9 +14,9 @@ import br.com.itads.empirico.view.importer.dto.LineDTO;
 
 public abstract class GenericTradeProcess implements TradeProcess {
 
-	TradeAdapter tradeAdapter;	
-	WalletAdapter walletAdapter;
-
+	protected TradeAdapter tradeAdapter;	
+	protected WalletAdapter walletAdapter;
+	
 	protected GenericTradeProcess(TradeAdapter tradeAdapter, WalletAdapter walletAdapter) {
 		this.tradeAdapter  = tradeAdapter;
 		this.walletAdapter = walletAdapter;
@@ -31,28 +30,19 @@ public abstract class GenericTradeProcess implements TradeProcess {
 
 	private TradeDTO parseTade(LineDTO lineDTO) {
 
-		BigDecimal valor = lineDTO.precoOperacao();
-
-		/**
-		 * Operação de Cisao
-		 */
-		if (lineDTO.financeiroOperacao().compareTo(BigDecimal.ZERO) < 0) {
-			valor = lineDTO.financeiroOperacao(); 
-		}
-
 		return new TradeDTO(
 				UUID.randomUUID(),
 				lineDTO.descricao(),
 				parseData(lineDTO),
 				lineDTO.quantidade(),
-				valor, 
+				lineDTO.precoOperacao(), 
 				lineDTO.papel(),
 				lineDTO.papel(),
 				AssetClassEnum.ACOES_BR.name()
 				);
 	}
 
-	private LocalDateTime parseData(LineDTO lineDTO) {
+	protected LocalDateTime parseData(LineDTO lineDTO) {
 		return LocalDateTime.parse(lineDTO.data(), DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
 	}			
 

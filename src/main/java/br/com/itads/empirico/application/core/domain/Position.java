@@ -61,9 +61,9 @@ public class Position implements Serializable {
 		totalPriceWithResults = BigDecimal.ZERO;
 		
 		/* Get all trades */
-		this.trades.entrySet().stream().forEach(trade -> {
+		for (Map.Entry<UUID, Trade> trade : this.trades.entrySet()) {		
 			totalPrice = totalPrice.add(trade.getValue().getTotalTradeValue());
-		});
+		};
 		/* calc average price of position */
 		averagePrice = totalPrice.divide(quantity, RoundingMode.HALF_UP);//16.84
 		
@@ -122,6 +122,17 @@ public class Position implements Serializable {
 		return results;
 	}
 
+	public List<Result> getResults() {
+		return results;
+	}
+	
+	public BigDecimal getTotalResults() {
+		BigDecimal total = results.stream()
+				.map(Result::price)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);		
+		return total;
+	}
+	
 	public String getAssetTicker() {
 		return assetTicker;
 	}

@@ -3,7 +3,7 @@ package br.com.itads.empirico.adapters.out.http.bovespa.response;
 public class StockResult {
 
 	String currency; 
-	long marketCap;
+	double marketCap;
 	String shortName; 
 	String longName; 
 	double regularMarketChange;
@@ -13,7 +13,7 @@ public class StockResult {
 	double regularMarketDayHigh;
 	String regularMarketDayRange; 
 	double regularMarketDayLow;
-	long regularMarketVolume; 
+	double regularMarketVolume; 
 	double regularMarketPreviousClose; 
 	double regularMarketOpen;
 	String fiftyTwoWeekRange; 
@@ -28,7 +28,7 @@ public class StockResult {
 	
 	public StockResult(
 			String currency, 
-			long marketCap,
+			double marketCap,
 			String shortName,
 			String longName, 
 			double regularMarketChange,
@@ -38,7 +38,7 @@ public class StockResult {
 			double regularMarketDayHigh, 
 			String regularMarketDayRange, 
 			double regularMarketDayLow,
-			long regularMarketVolume, 
+			double regularMarketVolume, 
 			double regularMarketPreviousClose, 
 			double regularMarketOpen,
 			String fiftyTwoWeekRange, 
@@ -78,7 +78,7 @@ public class StockResult {
 	public String getCurrency() {
 		return currency;
 	}
-	public long getMarketCap() {
+	public double getMarketCap() {
 		return marketCap;
 	}
 	public String getShortName() {
@@ -108,7 +108,7 @@ public class StockResult {
 	public double getRegularMarketDayLow() {
 		return regularMarketDayLow;
 	}
-	public long getRegularMarketVolume() {
+	public double getRegularMarketVolume() {
 		return regularMarketVolume;
 	}
 	public double getRegularMarketPreviousClose() {
