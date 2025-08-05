@@ -6,12 +6,14 @@ import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 
+import br.com.itads.empirico.adapters.out.repository.file.DumpWalletRecommendationRepositoryImpl;
 import br.com.itads.empirico.adapters.out.repository.file.PositionRepositoryImpl;
 import br.com.itads.empirico.adapters.out.repository.file.WalletRepositoryImpl;
 import br.com.itads.empirico.application.core.domain.Asset;
 import br.com.itads.empirico.application.core.domain.Position;
 import br.com.itads.empirico.application.core.domain.Wallet;
 import br.com.itads.empirico.application.core.service.WalletService;
+import br.com.itads.empirico.application.ports.out.repository.DumpWalletRecommendationRepository;
 import br.com.itads.empirico.application.ports.out.repository.PositionRepository;
 import br.com.itads.empirico.application.ports.out.repository.WalletRepository;
 import br.com.itads.empirico.mock.MockBuilderForTestsJunit;
@@ -20,10 +22,11 @@ class WalletServiceTest {
 
 	WalletRepository walletRepository = WalletRepositoryImpl.INSTANCE;
 	PositionRepository positionRepository = PositionRepositoryImpl.INSTANCE;
+	DumpWalletRecommendationRepository dumpWalletRecommendationRepository = DumpWalletRecommendationRepositoryImpl.INSTANCE; 
 	WalletService walletService;
 
 	public WalletServiceTest() {
-		walletService = new WalletService(walletRepository, positionRepository);
+		walletService = new WalletService(walletRepository, positionRepository, dumpWalletRecommendationRepository);
 	}
 
 	/**

@@ -13,13 +13,16 @@ import org.tinylog.Logger;
 
 import com.sun.net.httpserver.HttpExchange;
 
+import br.com.itads.empirico.adapters.dto.DashboardAdapterDTO;
 import br.com.itads.empirico.adapters.dto.DashboardDTO;
+import br.com.itads.empirico.adapters.dto.WalletDashboardAdapterDTO;
 import br.com.itads.empirico.adapters.in.WalletAdapter;
 import br.com.itads.empirico.application.core.domain.Position;
 import br.com.itads.empirico.application.core.domain.User;
 import br.com.itads.empirico.application.core.domain.Wallet;
 import br.com.itads.empirico.util.AdapterBuilder;
 import br.com.itads.empirico.util.FixUtils;
+import br.com.itads.empirico.view.web.server.HttpSessionThreadLocal;
 import br.com.itads.empirico.view.web.server.strategy.HtmlPage;
 
 public class DashboardHtmlPage implements HtmlPage {
@@ -130,12 +133,15 @@ public class DashboardHtmlPage implements HtmlPage {
 	
 	private String buildContent(List<DashboardDTO> dataList) {
 		StringBuilder response = new StringBuilder();
+		
+		List<DashboardAdapterDTO> listToRecommendation = new ArrayList<>();
+		
 		for (DashboardDTO dashboardDTO : dataList) {
 			System.out.println(dashboardDTO);
 			
-			BigDecimal rentability = dashboardDTO.calcRentabilityAddResults();
-			String color = rentability.compareTo(BigDecimal.ZERO) < 0 ? " style=\"background-color:#ffaaaa;\"" : " style=\"background-color:#aaffaa;\"";
-			String spanColor = rentability.compareTo(BigDecimal.ZERO) < 0 ? " style=\"color:#ffaaaa;\"" : " style=\"color:#aaffaa;\"";
+			BigDecimal rentabilityAddResults = dashboardDTO.calcRentabilityAddResults();
+			String color = rentabilityAddResults.compareTo(BigDecimal.ZERO) < 0 ? " style=\"background-color:#ffaaaa;\"" : " style=\"background-color:#aaffaa;\"";
+			String spanColor = rentabilityAddResults.compareTo(BigDecimal.ZERO) < 0 ? " style=\"color:#ffaaaa;\"" : " style=\"color:#aaffaa;\"";
 
 			BigDecimal yield = dashboardDTO.calcYield();
 			
@@ -162,7 +168,7 @@ public class DashboardHtmlPage implements HtmlPage {
 			response.append(			dashboardDTO.totalResult()	 	 );
 			response.append("		</td>								");
 			response.append("		<td"+ color +">						");
-			response.append(     		rentability						 );
+			response.append(     		rentabilityAddResults			 );
 			response.append("		%</td>								");
 			response.append("		<td>								");
 			response.append(" 			<span "+spanColor+">"			 ); 
@@ -171,8 +177,26 @@ public class DashboardHtmlPage implements HtmlPage {
 			response.append("		</td>								");			
 			response.append("	</tr>									");
 			response.append("	     									");
+			
+			listToRecommendation.add( new DashboardAdapterDTO(
+					dashboardDTO, 
+					dashboardDTO.calcRentability(), 
+					rentabilityAddResults, 
+					yield
+			));
+			
+			WalletDashboardAdapterDTO walletDashboardAdapterDTO = 
+					new WalletDashboardAdapterDTO(
+							HttpSessionThreadLocal.INSTANCE.defaultWallet(), 
+							listToRecommendation
+					);
+			
+			walletAdapter.dump(walletDashboardAdapterDTO);
+			
 		}
+
 		return response.toString();
+
 	}
 
 	private List<DashboardDTO> getDataList(UUID uuid) {

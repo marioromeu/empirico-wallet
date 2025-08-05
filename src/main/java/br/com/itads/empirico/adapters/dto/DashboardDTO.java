@@ -1,5 +1,6 @@
 package br.com.itads.empirico.adapters.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -10,7 +11,7 @@ public record DashboardDTO(
 		BigDecimal actualQuote,
 		BigDecimal totalPosition, 
 		BigDecimal totalResult,
-		String profitabilityPlusResults) {
+		String profitabilityPlusResults) implements Serializable {
 	
 	public BigDecimal calcRentability() {
 		BigDecimal actual = actualQuote.multiply(new BigDecimal(""+100));

@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import br.com.itads.empirico.adapters.dto.WalletDTO;
+import br.com.itads.empirico.adapters.dto.WalletDashboardAdapterDTO;
 import br.com.itads.empirico.application.core.domain.Position;
 import br.com.itads.empirico.application.core.domain.User;
 import br.com.itads.empirico.application.core.domain.Wallet;
@@ -56,6 +57,10 @@ public class WalletAdapter implements PortWallet {
 
 	public Wallet doDashboard(UUID uuid) {
 		return walletService.doDashboard(uuid);
+	}
+
+	public void dump(WalletDashboardAdapterDTO walletDashboardAdapterDTO) {
+		walletService.dump(walletDashboardAdapterDTO);		
 	}
 
 }

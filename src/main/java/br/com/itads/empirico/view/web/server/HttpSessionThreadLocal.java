@@ -12,7 +12,10 @@ public class HttpSessionThreadLocal extends ThreadLocal<Wallet> {
 	} 
 	
 	public UUID defaultWallet() {
-		return UUID.fromString("d88cf443-4534-4e56-90ab-93bbf9e4a1b5");	
+		if (this.get() == null) {
+			return UUID.fromString("d88cf443-4534-4e56-90ab-93bbf9e4a1b5");
+		}
+		return this.get().getUuid();
 	}
 	
 }

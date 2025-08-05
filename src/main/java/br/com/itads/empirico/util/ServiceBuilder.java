@@ -1,10 +1,13 @@
 package br.com.itads.empirico.util;
 
 import br.com.itads.empirico.adapters.out.repository.file.AssetRepositoryImpl;
+import br.com.itads.empirico.adapters.out.repository.file.DumpWalletRecommendationRepositoryImpl;
 import br.com.itads.empirico.adapters.out.repository.file.PositionRepositoryImpl;
+import br.com.itads.empirico.adapters.out.repository.file.RecommendationRepositoryImpl;
 import br.com.itads.empirico.adapters.out.repository.file.TradeRepositoryImpl;
 import br.com.itads.empirico.adapters.out.repository.file.WalletRepositoryImpl;
 import br.com.itads.empirico.application.core.service.AssetService;
+import br.com.itads.empirico.application.core.service.RecommendationService;
 import br.com.itads.empirico.application.core.service.TradeService;
 import br.com.itads.empirico.application.core.service.WalletService;
 
@@ -22,7 +25,18 @@ public class ServiceBuilder {
 	}
 	
 	public static WalletService buildWalletService() {
-		return new WalletService(WalletRepositoryImpl.INSTANCE, PositionRepositoryImpl.INSTANCE);
+		return new WalletService(
+				WalletRepositoryImpl.INSTANCE, 
+				PositionRepositoryImpl.INSTANCE,
+				DumpWalletRecommendationRepositoryImpl.INSTANCE
+		);
+	}
+	
+	public static RecommendationService buildRecommendationService() {
+		return new RecommendationService(
+				DumpWalletRecommendationRepositoryImpl.INSTANCE,
+				RecommendationRepositoryImpl.INSTANCE
+		);
 	}
 
 }

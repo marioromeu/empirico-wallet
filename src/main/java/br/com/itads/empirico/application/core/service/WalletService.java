@@ -3,9 +3,11 @@ package br.com.itads.empirico.application.core.service;
 import java.util.Objects;
 import java.util.UUID;
 
+import br.com.itads.empirico.adapters.dto.WalletDashboardAdapterDTO;
 import br.com.itads.empirico.application.core.domain.Position;
 import br.com.itads.empirico.application.core.domain.User;
 import br.com.itads.empirico.application.core.domain.Wallet;
+import br.com.itads.empirico.application.ports.out.repository.DumpWalletRecommendationRepository;
 import br.com.itads.empirico.application.ports.out.repository.PositionRepository;
 import br.com.itads.empirico.application.ports.out.repository.WalletRepository;
 import br.com.itads.empirico.view.console.SessionThreadLocal;
@@ -14,10 +16,15 @@ public class WalletService {
 
 	WalletRepository walletRepository;
 	PositionRepository positionRepository;
+	DumpWalletRecommendationRepository dumpWalletRecommendationRepository;
 	
-	public WalletService(WalletRepository repository, PositionRepository positionRepository) {
+	public WalletService(
+			WalletRepository repository, 
+			PositionRepository positionRepository,
+			DumpWalletRecommendationRepository dumpWalletRecommendationRepository) {
 		this.walletRepository = repository;
 		this.positionRepository = positionRepository;
+		this.dumpWalletRecommendationRepository = dumpWalletRecommendationRepository;
 	}
 
 	public void updatePosition(UUID uuid, Position position) {		
@@ -69,6 +76,11 @@ public class WalletService {
 
 	public Wallet saveWallet(Wallet wallet) {		
 		return walletRepository.saveOrUpdate(wallet);
+	}
+
+	public void dump(WalletDashboardAdapterDTO walletDashboardAdapterDTO) {
+		dumpWalletRecommendationRepository.saveOrUpdate(walletDashboardAdapterDTO);
+		
 	}	
 	
 }
